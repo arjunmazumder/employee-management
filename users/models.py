@@ -12,6 +12,7 @@ class Designation(models.Model):
 
 class User(AbstractUser):
     username = None
+    name = models.CharField(max_length=100, blank=True, null=True)
     email = models.EmailField(unique=True)
     address = models.TextField(blank=True, null=True)
     phone_number = models.CharField(max_length=15, blank=True, null=True)
