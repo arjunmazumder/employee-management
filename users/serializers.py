@@ -13,7 +13,7 @@ class UserCreateWithTokenSerializer(BaseUserCreateSerializer):
 
     class Meta(BaseUserCreateSerializer.Meta):
         model = User
-        fields = ['id', 'first_name', 'last_name', 'email', 'password', 
+        fields = ['id', 'name', 'email', 'password', 
                   'confirm_password', 'address', 'phone_number', 'designation', 'blood_group', 'token']
 
     def validate(self, attrs):
