@@ -100,17 +100,60 @@ WSGI_APPLICATION = 'saleZen.wsgi.app'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'softzen1_saledb',
+#         'USER': 'softzen1_salezenuser',
+#         'PASSWORD': 'Arjun37912',
+#         'HOST': '144.79.133.221',
+#         'PORT': '3306',
+#     }
+# }
+
+
+#without pooler
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'PASSWORD': 'Sq2W2dy4hf1CmHMu',
+#         'HOST': 'db.ualupjqgxnagzilprjci.supabase.co',
+#         'PORT': '5432',
+#     }
+# }
+
+
+#with transjation pooler
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres.ualupjqgxnagzilprjci',
+#         'PASSWORD': 'Sq2W2dy4hf1CmHMu',
+#         'HOST': 'aws-1-ap-southeast-1.pooler.supabase.com',
+#         'PORT': '6543',
+#         'OPTIONS': {
+#             'connect_timeout': 10,
+#         }
+#     }
+# }
+
+
+#session
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'softzen1_saledb',
-        'USER': 'softzen1_salezenuser',
-        'PASSWORD': 'Arjun37912',
-        'HOST': '144.79.133.221',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.ualupjqgxnagzilprjci', # আপনার প্রজেক্ট আইডি সহ ইউজার
+        'PASSWORD': 'Sq2W2dy4hf1CmHMu',          # আপনার দেওয়া পাসওয়ার্ড
+        'HOST': 'aws-1-ap-northeast-1.pooler.supabase.com', # সেশন পুলার হোস্ট
+        'PORT': '5432',                          # সেশন পুলারের পোর্ট ৫৪৩২
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

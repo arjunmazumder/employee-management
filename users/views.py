@@ -5,7 +5,12 @@ from rest_framework.views import APIView
 
 from rest_framework import generics
 from users.models import Designation, User
-from users.serializers import DesignationSerializer, NonStaffUserSerializer
+from users.serializers import DesignationSerializer, NonStaffUserSerializer, UserCreateWithTokenSerializer
+
+
+class UserRegisterWithTokenView(generics.CreateAPIView):
+    serializer_class = UserCreateWithTokenSerializer
+
 
 class DesignationListCreateView(generics.ListCreateAPIView):
     queryset = Designation.objects.all()

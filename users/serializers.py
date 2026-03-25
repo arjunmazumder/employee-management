@@ -4,25 +4,34 @@ from rest_framework import serializers
 
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from .models import User
 
-class UserCreateSerializer(BaseUserCreateSerializer):
-    # Add confirm_password field
+class UserCreateWithTokenSerializer(BaseUserCreateSerializer):
     confirm_password = serializers.CharField(write_only=True)
+    token = serializers.SerializerMethodField(read_only=True)  # Add token field
 
     class Meta(BaseUserCreateSerializer.Meta):
+        model = User
         fields = ['id', 'first_name', 'last_name', 'email', 'password', 
-                  'confirm_password', 'address', 'phone_number', 'designation', 'blood_group']
+                  'confirm_password', 'address', 'phone_number', 'designation', 'blood_group', 'token']
 
     def validate(self, attrs):
-        # Check if password and confirm_password match
         if attrs['password'] != attrs['confirm_password']:
             raise serializers.ValidationError({"password": "Password and confirm password do not match."})
         return attrs
 
     def create(self, validated_data):
-        # Remove confirm_password before creating user
-        validated_data.pop('confirm_password', None)
-        return super().create(validated_data)
+        validated_data.pop('confirm_password', None)  # Remove confirm_password
+        user = super().create(validated_data)
+        return user
+
+    def get_token(self, obj):
+        refresh = RefreshToken.for_user(obj)
+        return {
+            'refresh': str(refresh),
+            'access': str(refresh.access_token)
+        }
 
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
