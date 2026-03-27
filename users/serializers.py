@@ -36,7 +36,7 @@ class UserCreateWithTokenSerializer(BaseUserCreateSerializer):
 class UserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'CustomUser'
-        fields = ['id','first_name', 'last_name', 'email', 'address', 'phone_number', 'designation', 'blood_group']
+        fields = ['id','name', 'email', 'address', 'phone_number', 'designation', 'blood_group']
         read_only_fields = ['is_staff']
 
 
@@ -50,4 +50,4 @@ class DesignationSerializer(serializers.ModelSerializer):
 class NonStaffUserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'NonStaffUser'
-        fields = ['id','first_name', 'last_name', 'email', 'address', 'phone_number', 'designation', 'blood_group']
+        fields = ['id','name', 'email', 'address', 'phone_number', 'designation', 'blood_group']
