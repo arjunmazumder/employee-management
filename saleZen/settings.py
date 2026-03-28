@@ -148,10 +148,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres.ualupjqgxnagzilprjci', # আপনার প্রজেক্ট আইডি সহ ইউজার
-        'PASSWORD': 'Sq2W2dy4hf1CmHMu',          # আপনার দেওয়া পাসওয়ার্ড
-        'HOST': 'aws-1-ap-northeast-1.pooler.supabase.com', # সেশন পুলার হোস্ট
-        'PORT': '5432',                          # সেশন পুলারের পোর্ট ৫৪৩২
+        'USER': 'postgres.ualupjqgxnagzilprjci', 
+        'PASSWORD': 'Sq2W2dy4hf1CmHMu',          
+        'HOST': 'aws-1-ap-northeast-1.pooler.supabase.com', 
+        'PORT': '5432',                          
     }
 }
 

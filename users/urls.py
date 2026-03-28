@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from users.views import DesignationListCreateView, NonStaffUserListView, ApproveUserView,  UserRegisterWithTokenView, CustomTokenObtainPairView
 urlpatterns = [
     path('users-register/', UserRegisterWithTokenView.as_view(), name='register-token'),
