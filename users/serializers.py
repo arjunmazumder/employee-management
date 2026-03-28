@@ -5,6 +5,8 @@ from rest_framework import serializers
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from .models import User
 
 class UserCreateWithTokenSerializer(BaseUserCreateSerializer):
@@ -51,3 +53,30 @@ class NonStaffUserSerializer(BaseUserSerializer):
     class Meta(BaseUserSerializer.Meta):
         ref_name = 'NonStaffUser'
         fields = ['id','name', 'email', 'address', 'phone_number', 'designation', 'blood_group']
+
+
+#Login serializers
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        # প্রথমে ইমেল এবং পাসওয়ার্ড ঠিক আছে কি না তা ডিফল্ট ভাবে চেক হবে
+        data = super().validate(attrs)
+
+        # ইউজার যদি অনুমোদিত (is_staff=True) না হয়, তবে লগইন করতে দিবে না
+        if not self.user.is_staff:
+            raise serializers.ValidationError(
+                {"detail": "Your account is pending approval. Please contact the administrator."}
+            )
+
+        # ইউজার অনুমোদিত হলে নিচের তথ্যগুলো রিটার্ন করবে
+        data['user'] = {
+            'id': self.user.id,
+            'name': self.user.name,
+            'email': self.user.email,
+            'address': self.user.address,
+            'phone_number': self.user.phone_number,
+            'blood_group': self.user.blood_group,
+            'designation': self.user.designation,
+            'is_staff': self.user.is_staff,
+        }
+        return data
