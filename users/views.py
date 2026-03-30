@@ -42,3 +42,40 @@ class ApproveUserView(APIView):
 #users Login 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+
+
+###############################################################
+from rest_framework import generics, permissions
+from users.models import Store, Product, Order
+from users.serializers import StoreSerializer, ProductSerializer, OrderSerializer
+
+class StoreListCreateView(generics.ListCreateAPIView):
+    queryset = Store.objects.all()
+    serializer_class = StoreSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    # def perform_create(self, serializer):
+    #     serializer.save(owner=self.request.user)
+
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(owner=self.request.user)
+        else:
+            # এখানে হয় এরর থ্রো করুন অথবা ডিফল্ট কোনো ইউজার দিন
+            raise serializers.ValidationError("স্টোর তৈরি করতে লগইন করা আবশ্যক।")
+
+class InventoryListCreateView(generics.ListCreateAPIView):
+    serializer_class = ProductSerializer
+    # permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        store_id = self.request.query_params.get('store_id')
+        if store_id:
+            return Product.objects.filter(store_id=store_id)
+        return Product.objects.all()
+
+class OrderCreateListView(generics.ListCreateAPIView):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    # permission_classes = [permissions.IsAuthenticated]
