@@ -1,5 +1,5 @@
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-from users.models import Store, Product, Order, OrderItem
+from users.models import User, Store, Product, Order, OrderItem
 
 from users.models import Designation
 from rest_framework import serializers
@@ -8,7 +8,9 @@ from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from users.models import User
+
+
+
 
 class UserCreateWithTokenSerializer(BaseUserCreateSerializer):
     confirm_password = serializers.CharField(write_only=True)

@@ -3,9 +3,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import generics
-from users.models import Designation, User
-from users.serializers import DesignationSerializer, NonStaffUserSerializer, UserCreateWithTokenSerializer,CustomTokenObtainPairSerializer
+from rest_framework import generics, permissions, serializers
+from users.models import Designation, User, Store, Product, Order
+from users.serializers import DesignationSerializer, NonStaffUserSerializer, UserCreateWithTokenSerializer,CustomTokenObtainPairSerializer, StoreSerializer, ProductSerializer, OrderSerializer
 
 
 class UserRegisterWithTokenView(generics.CreateAPIView):
@@ -46,24 +46,22 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 
 ###############################################################
-from rest_framework import generics, permissions
-from users.models import Store, Product, Order
-from users.serializers import StoreSerializer, ProductSerializer, OrderSerializer
+
+
+
 
 class StoreListCreateView(generics.ListCreateAPIView):
     queryset = Store.objects.all()
     serializer_class = StoreSerializer
+    # প্রোডাকশনে এটি আন-কমেন্ট করে দিবেন
     # permission_classes = [permissions.IsAuthenticated]
 
-    # def perform_create(self, serializer):
-    #     serializer.save(owner=self.request.user)
-
     def perform_create(self, serializer):
-        if self.request.user.is_authenticated:
-            serializer.save(owner=self.request.user)
-        else:
-            # এখানে হয় এরর থ্রো করুন অথবা ডিফল্ট কোনো ইউজার দিন
-            raise serializers.ValidationError("স্টোর তৈরি করতে লগইন করা আবশ্যক।")
+        # ইউজার লগইন না থাকলে যেন ৫০০ এরর না দিয়ে ৪০০ এরর দেয়
+        if not self.request.user.is_authenticated:
+            raise serializers.ValidationError({"detail": "স্টোর তৈরি করতে লগইন করা আবশ্যক।"})
+        
+        serializer.save(owner=self.request.user)
 
 class InventoryListCreateView(generics.ListCreateAPIView):
     serializer_class = ProductSerializer
