@@ -73,7 +73,13 @@ class InventoryListCreateView(generics.ListCreateAPIView):
             return Product.objects.filter(store_id=store_id)
         return Product.objects.all()
 
-class OrderCreateListView(generics.ListCreateAPIView):
+
+class OrderRetrieveUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    # permission_classes = [permissions.IsAuthenticated]
+
+
+# class OrderCreateListView(generics.ListCreateAPIView):
+#     queryset = Order.objects.all()
+#     serializer_class = OrderSerializer
+# #     # permission_classes = [permissions.IsAuthenticated]

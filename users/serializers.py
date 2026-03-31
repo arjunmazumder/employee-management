@@ -127,3 +127,28 @@ class OrderSerializer(serializers.ModelSerializer):
         order.save()
 
         return order
+    
+    def update(self, instance, validated_data):
+        items_data = validated_data.pop('items', None)
+
+        # Update basic fields
+        instance.customer_email = validated_data.get('customer_email', instance.customer_email)
+        instance.status = validated_data.get('status', instance.status)
+        instance.store = validated_data.get('store', instance.store)
+        instance.save()
+
+        if items_data is not None:
+            # Delete old items
+            instance.items.all().delete()
+
+            total = 0
+
+            # Create new items
+            for item_data in items_data:
+                total += item_data['quantity'] * item_data['unit_price']
+                OrderItem.objects.create(order=instance, **item_data)
+
+            instance.total_amount = total
+            instance.save()
+
+            return instance
