@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from users.models import User, Designation, Store, Product, Order, OrderItem
+from users.models import User, Designation
 # Register your models here.
 
 
@@ -28,7 +28,3 @@ class CustomUserAdmin(UserAdmin):
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(Designation)
-admin.site.register(Order)
-admin.site.register(Store)
-admin.site.register(OrderItem)
-admin.site.register(Product)
