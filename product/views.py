@@ -17,20 +17,36 @@ class CreateProductView(generics.CreateAPIView):
     serializer_class = ProductSerializer
 
 # --- GET Methods (Employee/Admin) ---
+# --- GET Methods (Employee/Admin) ---
 class GetCategoriesView(generics.ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "message": "Fetched all categories",
+            "data": {"requests": serializer.data}
+        })
 
 
 class GetSubCategoriesView(generics.ListAPIView):
     serializer_class = SubCategorySerializer
     
     def get_queryset(self):
-        # অপশনাল: নির্দিষ্ট ক্যাটাগরির সাব-ক্যাটাগরি পেতে ফিল্টার
         category_id = self.request.query_params.get('category_id')
         if category_id:
             return SubCategory.objects.filter(category_id=category_id)
         return SubCategory.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "message": "Fetched all subcategories",
+            "data": {"requests": serializer.data}
+        })
 
 
 class GetProductsView(generics.ListAPIView):
@@ -47,13 +63,18 @@ class GetProductsView(generics.ListAPIView):
             queryset = queryset.filter(subcategory_id=sub_cat_id)
         return queryset
 
-
-
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            "message": "Fetched all products",
+            "data": {"requests": serializer.data}
+        })
 
 
 
 class SalesOverviewView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user

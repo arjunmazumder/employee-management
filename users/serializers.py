@@ -1,5 +1,4 @@
 from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer, UserSerializer as BaseUserSerializer
-from users.models import User
 
 from users.models import Designation
 from rest_framework import serializers
@@ -8,7 +7,7 @@ from djoser.serializers import UserCreateSerializer as BaseUserCreateSerializer
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from users.models import Team,Team, Notice
+from users.models import Team,Team, Notice, User
 
 
 
@@ -127,6 +126,7 @@ class NoticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Notice
         fields = ['id', 'title', 'description', 'image', 'teams']
+        # 'created_by' এখানে দেওয়ার দরকার নেই যদি আপনি এটি ইনপুট হিসেবে না চান
 
 
 

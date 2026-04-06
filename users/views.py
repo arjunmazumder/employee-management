@@ -12,10 +12,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 from utils.response import success_response, error_response
 
-from .serializers import (
+from users.serializers import (
     TeamSerializer,
     TeamDetailSerializer,
     EmployeeSerializer,
@@ -124,7 +125,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class ApprovedEmployeeListView(generics.ListAPIView):
     serializer_class = UserSerializer 
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         # Admin বাদে সব Approved ইউজারদের ফিল্টার করা
@@ -243,7 +244,7 @@ class TeamDetailsView(APIView):
 
 
 class EmployeeInfoView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         employee_id = request.query_params.get('employee_id')
@@ -257,21 +258,49 @@ class EmployeeInfoView(APIView):
         )
     
 
+# class CreateNoticeView(APIView):
+#     # permission_classes = [IsAuthenticated] # নিশ্চিত করুন ইউজার লগইন করা আছে
+
+#     def post(self, request):
+#         serializer = NoticeSerializer(data=request.data)
+
+#         if serializer.is_valid():
+#             # সমস্যা এখানে হতে পারে যদি request.user না থাকে
+#             # তাই আগে চেক করে নিন ইউজার অথেনটিকেটেড কি না
+#             if request.user.is_authenticated:
+#                 serializer.save(created_by=request.user)
+#                 return Response({
+#                     "message": "Notice created successfully",
+#                     "data": {"requests": serializer.data}
+#                 }, status=status.HTTP_201_CREATED)
+#             else:
+#                 return Response({"error": "User not authenticated"}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         return Response({
+#             "message": "Validation error",
+#             "errors": serializer.errors
+#         }, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CreateNoticeView(APIView):
-    # permission_classes = [IsAdminOrTL]
+    # এই পারমিশনটি থাকলে টোকেন ছাড়া কেউ রিকোয়েস্ট পাঠাতে পারবে না
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         serializer = NoticeSerializer(data=request.data)
-
         if serializer.is_valid():
+            # টোকেন থেকে পাওয়া ইউজারকে 'created_by' হিসেবে সেভ করা হচ্ছে
             serializer.save(created_by=request.user)
-            return success_response("Notice created successfully", serializer.data, 201)
+            return Response({
+                "message": "Notice created successfully",
+                "data": {"requests": serializer.data}
+            }, status=201)
+        
+        return Response(serializer.errors, status=400)
 
-        return error_response("Validation error", serializer.errors)
-    
 
 class GetNoticeView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
+    # permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request):
         user = request.user

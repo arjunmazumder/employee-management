@@ -21,11 +21,11 @@ class Designation(models.Model):
 class User(AbstractUser):
     username = None
 
-    # ADMIN = 'ADMIN'
+    ADMIN = 'ADMIN'
     TL = 'TL'
     SR = 'SR'
     ROLE_CHOICES = [
-        # (ADMIN, 'Admin'),
+        (ADMIN, 'Admin'),
         (TL, 'Team Leader'),
         (SR, 'Sales Representative'),
     ]
@@ -75,9 +75,9 @@ class Notice(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     image = models.ImageField(upload_to='notices/', blank=True, null=True)
-    # created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE) # এটি আনকমেন্ট করুন
     teams = models.ManyToManyField(Team, blank=True)
-    # created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True,null=True) # এটি আনকমেন্ট করুন
 
     def __str__(self):
         return self.title
