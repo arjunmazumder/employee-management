@@ -12,7 +12,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from django.shortcuts import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from users.permissions import IsAdmin, IsAdminOrTL, IsTL, IsSR
 
 from utils.response import success_response, error_response
@@ -23,11 +23,13 @@ from users.serializers import (
     EmployeeSerializer,
     NoticeSerializer
 )
-# from .permissions import IsAdmin, IsAdminOrTL
 
+
+
+# Registration views
 class UserRegisterWithTokenView(generics.CreateAPIView):
     serializer_class = UserCreateWithTokenSerializer
-    # permission_classes = [IsAdmin]
+    permission_classes = [AllowAny]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
