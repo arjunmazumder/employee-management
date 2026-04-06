@@ -5,20 +5,30 @@ from product.serializers import CategorySerializer, SubCategorySerializer, Produ
 from rest_framework.views import APIView
 from django.db.models import Sum, Count
 from product.models import Order
+from rest_framework.permissions import IsAuthenticated
+from users.permissions import IsAdmin, IsAdminOrTL, IsTL, IsSR
+
 
 # --- POST Methods (Admin) ---
 class CreateCategoryView(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated & IsAdmin]
     serializer_class = CategorySerializer
 
 class CreateSubCategoryView(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated & IsAdmin]
     serializer_class = SubCategorySerializer
 
 class CreateProductView(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated & IsAdmin]
     serializer_class = ProductSerializer
 
-# --- GET Methods (Employee/Admin) ---
+
 # --- GET Methods (Employee/Admin) ---
 class GetCategoriesView(generics.ListAPIView):
+
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -74,7 +84,8 @@ class GetProductsView(generics.ListAPIView):
 
 
 class SalesOverviewView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
+    
+    permission_classes = [IsAuthenticated & IsAdmin]
 
     def get(self, request):
         user = request.user

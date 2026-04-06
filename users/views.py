@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from users.permissions import IsAdmin, IsAdminOrTL, IsTL, IsSR
 
 from utils.response import success_response, error_response
 
@@ -46,7 +47,7 @@ class UserRegisterWithTokenView(generics.CreateAPIView):
 
 class PendingApprovalUserListView(generics.ListAPIView):
     serializer_class = NonStaffUserSerializer
-    # permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated & IsAdmin]
 
 
     def get_queryset(self):
@@ -69,7 +70,7 @@ class PendingApprovalUserListView(generics.ListAPIView):
 # do Approve Users
 
 class ApproveUserView(APIView):
-    # permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated & IsAdmin]
     def post(self, request, user_id):
         # Get the user to approve from your User model
         user = get_object_or_404(User, id=user_id)
@@ -100,8 +101,9 @@ class ApproveUserView(APIView):
 #users Login 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
+
     serializer_class = CustomTokenObtainPairSerializer
-    # permission_classes = [IsAdmin]
+    permission_classes = [IsAuthenticated & (IsAdmin | IsTL | IsSR)]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -125,7 +127,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
 
 class ApprovedEmployeeListView(generics.ListAPIView):
     serializer_class = UserSerializer 
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsAuthenticated & IsAdmin]
 
     def get_queryset(self):
         # Admin বাদে সব Approved ইউজারদের ফিল্টার করা
@@ -163,9 +165,11 @@ class IsAdminUser(permissions.BasePermission):
 
 
 class CreateTeamView(generics.CreateAPIView):
+
+    permission_classes = [IsAuthenticated & IsAdmin]
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    # permission_classes = [IsAdmin]
+    
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -189,9 +193,9 @@ class CreateTeamView(generics.CreateAPIView):
 
 
 class GetTeamsView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated & IsAdmin]
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    # permission_classes = [permissions.IsAuthenticated]
 
     def list(self, request, *args, **kwargs):
         serializer = self.get_serializer(self.get_queryset(), many=True)
@@ -205,8 +209,8 @@ class GetTeamsView(generics.ListAPIView):
 
 
 class AddTeamMemberView(APIView):
-    # permission_classes = [IsAdmin]
 
+    permission_classes = [IsAuthenticated & IsAdmin]
     def post(self, request):
         team_id = request.data.get('team_id')
         employee_id = request.data.get('employee_id')
@@ -228,7 +232,8 @@ class AddTeamMemberView(APIView):
 
 
 class TeamDetailsView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
+
+    permission_classes = [IsAuthenticated & IsAdmin]
 
     def get(self, request):
         team_id = request.query_params.get('team_id')
@@ -244,7 +249,8 @@ class TeamDetailsView(APIView):
 
 
 class EmployeeInfoView(APIView):
-    # permission_classes = [permissions.IsAuthenticated]
+
+    permission_classes = [IsAuthenticated & IsAdminOrTL]
 
     def get(self, request):
         employee_id = request.query_params.get('employee_id')
@@ -284,7 +290,7 @@ class EmployeeInfoView(APIView):
 
 class CreateNoticeView(APIView):
     # এই পারমিশনটি থাকলে টোকেন ছাড়া কেউ রিকোয়েস্ট পাঠাতে পারবে না
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated & IsAdmin]
 
     def post(self, request):
         serializer = NoticeSerializer(data=request.data)
