@@ -141,8 +141,8 @@ WSGI_APPLICATION = 'saleZen.wsgi.app'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.postgresql',
-        'ENGINE': 'mysql.connector.django',
+        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'mysql.connector.django',
         'NAME': 'postgres',
         'USER': 'postgres.ualupjqgxnagzilprjci', 
         'PASSWORD': 'Sq2W2dy4hf1CmHMu',          
@@ -190,7 +190,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-pymysql.install_as_MySQLdb()
+# pymysql.install_as_MySQLdb()
 
 STORAGES = {
     "staticfiles": {

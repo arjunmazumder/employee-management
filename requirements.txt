@@ -9,8 +9,6 @@ djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 djoser==2.3.3
 idna==3.11
-# mysqlclient==2.2.8
-pymysql
 oauthlib==3.3.1
 pillow==12.2.0
 psycopg2-binary==2.9.11
