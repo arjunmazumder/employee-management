@@ -3,6 +3,9 @@
 from pathlib import Path
 from datetime import timedelta
 import os
+import pymysql
+
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -138,7 +141,8 @@ WSGI_APPLICATION = 'saleZen.wsgi.app'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        # 'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'mysql.connector.django',
         'NAME': 'postgres',
         'USER': 'postgres.ualupjqgxnagzilprjci', 
         'PASSWORD': 'Sq2W2dy4hf1CmHMu',          
@@ -185,6 +189,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+pymysql.install_as_MySQLdb()
 
 STORAGES = {
     "staticfiles": {
