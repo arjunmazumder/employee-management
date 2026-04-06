@@ -18,3 +18,13 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+
+class SalesOverviewSerializer(serializers.Serializer):
+    total_orders = serializers.IntegerField()
+    pending_orders = serializers.IntegerField()
+    complete_orders = serializers.IntegerField()
+    cancel_orders = serializers.IntegerField()
+    total_sales = serializers.DecimalField(max_digits=12, decimal_places=2)
+    total_commission = serializers.DecimalField(max_digits=12, decimal_places=2)

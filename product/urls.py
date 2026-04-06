@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_categories/', GetCategoriesView.as_view(), name='get-categories'),
     path('get_subcategories/', GetSubCategoriesView.as_view(), name='get-subcategories'),
     path('get_products/', GetProductsView.as_view(), name='get-products'),
+    path('sales_overview/', SalesOverviewView.as_view(), name='sales-overview'),
 ]

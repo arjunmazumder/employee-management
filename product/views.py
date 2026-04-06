@@ -1,7 +1,10 @@
-from rest_framework import generics, status
+from rest_framework import generics,permissions, status
 from rest_framework.response import Response
 from product.models import Category, SubCategory, Product
-from product.serializers import CategorySerializer, SubCategorySerializer, ProductSerializer
+from product.serializers import CategorySerializer, SubCategorySerializer, ProductSerializer,SalesOverviewSerializer
+from rest_framework.views import APIView
+from django.db.models import Sum, Count
+from product.models import Order
 
 # --- POST Methods (Admin) ---
 class CreateCategoryView(generics.CreateAPIView):
@@ -43,3 +46,36 @@ class GetProductsView(generics.ListAPIView):
         if sub_cat_id:
             queryset = queryset.filter(subcategory_id=sub_cat_id)
         return queryset
+
+
+
+
+
+
+class SalesOverviewView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        
+        # অ্যাডমিন হলে সব ডাটা দেখবে, অন্যথায় শুধু নিজের ডাটা
+        orders = Order.objects.all() if user.role == 'ADMIN' else Order.objects.filter(employee=user)
+
+        # ডাইনামিক ক্যালকুলেশন
+        overview_data = {
+            "total_orders": orders.count(),
+            "pending_orders": orders.filter(status='PENDING').count(),
+            "complete_orders": orders.filter(status='COMPLETE').count(),
+            "cancel_orders": orders.filter(status='CANCEL').count(),
+            "total_sales": orders.filter(status='COMPLETE').aggregate(Sum('total_price'))['total_price__sum'] or 0,
+            "total_commission": orders.filter(status='COMPLETE').aggregate(Sum('commission_amount'))['commission_amount__sum'] or 0,
+        }
+
+        serializer = SalesOverviewSerializer(overview_data)
+        
+        return Response({
+            "message": "Fetched sales overview",
+            "data": {
+                "requests": serializer.data
+            }
+        })
